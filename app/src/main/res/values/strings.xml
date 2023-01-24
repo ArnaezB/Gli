@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Gli</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="game_card_name_placeholder">Placeholder: Revenge</string>
+    <string name="game_card_image">Cover of the game</string>
+    <string name="score_text">Score: </string>
+    <string name="score_value_placeholder">8 out of 10</string>
+</resources>
