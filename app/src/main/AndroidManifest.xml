@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gli"
         tools:targetApi="31">
+        <activity
+            android:name="es.arnaezb.gli.ui.MainActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
