@@ -3,43 +3,70 @@ package es.arnaezb.gli.ui.adapters
 import android.app.Activity
 
 import android.content.Context
+import android.graphics.Rect
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Recycler
 import es.arnaezb.gli.Game
+import es.arnaezb.gli.R
+import kotlin.random.Random
 
-class GameCardAdapter(private val mContext: Context, private val layoutResource: Int, games: List<Game>):
-    ArrayAdapter<Game>(mContext, layoutResource, games){
+class GameCardAdapter(private val dataSet: MutableList<Game>, private val context: Context):
+    RecyclerView.Adapter<GameCardAdapter.ViewHolder>() {
 
-    private var games: MutableList<Game> = ArrayList(games)
+    private var lastPosition = -1
+    override fun getItemCount() = dataSet.size
 
-    override fun getCount(): Int {
-        return games.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.listview_game_card_row, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItem(position: Int): Game {
-        return games[position]
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.name.text = Random.nextInt().toString()
+        setAnimation(holder.itemView, position)
     }
 
-    override fun getItemId(position: Int): Long {
-        return games[position].id.toLong()
-    }
-
-    override fun add(game: Game?) {
-        super.add(game!!)
-        notifyDataSetChanged()
-    }
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
-        if (convertView == null) {
-            val inflater = (mContext as Activity).layoutInflater
-            convertView = inflater.inflate(layoutResource, parent, false)
+    private fun setAnimation(view: View, position: Int) {
+        if (position > lastPosition) {
+            val animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
+            view.startAnimation(animation)
+            lastPosition = position
         }
-        return convertView!!
     }
 
+    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        val image: ImageView
+        val name: TextView
 
+        init {
+            image = view.findViewById(R.id.image)
+            name = view.findViewById(R.id.name)
+        }
+    }
+
+    class MarginDecorator(private val spaceMargin: Int): RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            with(outRect) {
+                if(parent.getChildAdapterPosition(view) == 0) top = spaceMargin
+                left = spaceMargin
+                right = spaceMargin
+                bottom = spaceMargin
+            }
+        }
+    }
 
 }
