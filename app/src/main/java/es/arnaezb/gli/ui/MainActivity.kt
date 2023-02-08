@@ -2,42 +2,33 @@ package es.arnaezb.gli.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ListView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import es.arnaezb.gli.Game
-import es.arnaezb.gli.R
-import es.arnaezb.gli.ui.adapters.GameCardAdapter
+import android.util.Log
+import es.arnaezb.gli.databinding.MainActivityBinding
+import es.arnaezb.gli.ui.fragments.GameDetailsFragment
+import es.arnaezb.gli.ui.fragments.GameListFragment
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var recyclerView: RecyclerView
-    lateinit var adapter: GameCardAdapter
-    var data = ArrayList<Game>()
-
+    private lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = MainActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // getting the recyclerview by its id
-        val recyclerview = findViewById<RecyclerView>(R.id.game_list)
-
-        // this creates a vertical layout Manager
-        recyclerview.layoutManager = LinearLayoutManager(this)
-        // this adds margins between the cards
-        recyclerview.addItemDecoration(GameCardAdapter.MarginDecorator(resources.getDimensionPixelOffset(R.dimen.margin_card)))
-
-        // This will pass the ArrayList to our Adapter
-        val adapter = GameCardAdapter(data, applicationContext)
-
-        findViewById<Button>(R.id.button).setOnClickListener {
-            data.add(Game(""))
-            adapter.notifyDataSetChanged()
+        val fragment = GameListFragment() {
+            id:Int -> toGameDetails(id)
         }
+        supportFragmentManager.beginTransaction()
+            .add(binding.mainContent.id, fragment, GameListFragment.TAG)
+            .commit()
+    }
 
-        // Setting the Adapter with the recyclerview
-        recyclerview.adapter = adapter
+    fun toGameDetails(gameId: Int) {
+        Log.i("MAIN_ACTIVITY", "chango to fragment details with id: $gameId")
+        val fragment = GameDetailsFragment()
+        supportFragmentManager.beginTransaction()
+            .add(binding.mainContent.id, fragment, GameDetailsFragment.TAG)
+            .commit()
     }
 }

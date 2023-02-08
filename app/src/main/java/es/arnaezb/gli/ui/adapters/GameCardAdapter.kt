@@ -17,17 +17,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import es.arnaezb.gli.Game
 import es.arnaezb.gli.R
+import es.arnaezb.gli.databinding.ListviewGameCardRowBinding
 import kotlin.random.Random
 
-class GameCardAdapter(private val dataSet: MutableList<Game>, private val context: Context):
+class GameCardAdapter(private val dataSet: MutableList<Game>, private val context: Context, private val _adapterContract: RecyclerAdapterContract):
     RecyclerView.Adapter<GameCardAdapter.ViewHolder>() {
 
     private var lastPosition = -1
+
+    val adapterContract get() = _adapterContract
     override fun getItemCount() = dataSet.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.listview_game_card_row, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, adapterContract)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -43,13 +46,18 @@ class GameCardAdapter(private val dataSet: MutableList<Game>, private val contex
         }
     }
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View, contract: RecyclerAdapterContract): RecyclerView.ViewHolder(view) {
         val image: ImageView
         val name: TextView
 
         init {
             image = view.findViewById(R.id.image)
             name = view.findViewById(R.id.name)
+            view.setOnClickListener{
+                if(adapterPosition != RecyclerView.NO_POSITION) {
+                    contract.onItemClick(adapterPosition)
+                }
+            }
         }
     }
 
@@ -67,6 +75,10 @@ class GameCardAdapter(private val dataSet: MutableList<Game>, private val contex
                 bottom = spaceMargin
             }
         }
+    }
+
+    interface RecyclerAdapterContract {
+        fun onItemClick(pos: Int)
     }
 
 }
